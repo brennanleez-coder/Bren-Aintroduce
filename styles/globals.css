@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+/* styles/globals.css */
+/* styles/globals.css */
+
+.neu-input {
+  border-radius: 1rem;
+  position: relative;
+  background: #2e3a59;
+}
+
+.neu-input::before, .neu-input::after {
+  content: "";
+  position: absolute;
+  border-radius: 1rem;
+}
+
+.neu-input::before {
+  top: -0.5rem;
+  left: -0.5rem;
+  right: 0;
+  bottom: 0;
+  box-shadow: -5px -5px 15px #272f4d, 5px 5px 15px #35466b;
+}
+
+.neu-input::after {
+  top: 0;
+  left: 0;
+  right: -0.5rem;
+  bottom: -0.5rem;
+  box-shadow: -1px -1px 2px #272f4d, 1px 1px 2px #35466b;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db; /* Blue */
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
