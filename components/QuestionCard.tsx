@@ -105,7 +105,7 @@ const QuestionCard = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Ask your question..."
-                className="focus:ring-2 focus:ring-gray-700 w-full p-4 bg-gray-800 rounded-xl focus:outline-none text-gray-300 placeholder-gray-500"
+                className="border border-gray-500 focus:ring-2 focus:ring-gray-700 w-full p-4 bg-gray-800 rounded-xl focus:outline-none text-gray-300 placeholder-gray-500"
                 autoFocus={true}
                 style={{ pointerEvents: 'auto', zIndex: 10 }}
             />
