@@ -96,7 +96,7 @@ const QuestionCard = () => {
         </div>
 
         <form onSubmit={formik.handleSubmit} className="space-y-4">
-            <div className="neu-input">
+            {/* <div className="neu-input"> */}
             <input
                 type="text"
                 id="question"
@@ -105,12 +105,12 @@ const QuestionCard = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="Ask your question..."
-                className="w-full p-4 bg-gray-800 rounded-xl focus:outline-none text-gray-300 placeholder-gray-500"
-                autoFocus={true} // Adding autofocus
-                style={{ pointerEvents: 'auto', zIndex: 10 }} // Explicitly setting pointer events and zIndex
+                className="focus:ring-2 focus:ring-gray-700 w-full p-4 bg-gray-800 rounded-xl focus:outline-none text-gray-300 placeholder-gray-500"
+                autoFocus={true}
+                style={{ pointerEvents: 'auto', zIndex: 10 }}
             />
 
-            </div>
+            {/* </div> */}
             {formik.touched.question && formik.errors.question ? (
                 <div className="text-red-500 mt-2">Error: {formik.errors.question}</div>
             ) : null}
