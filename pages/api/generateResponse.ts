@@ -8,7 +8,7 @@ const instructionMessage: ChatCompletionRequestMessage = {
 };
 
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const generateResponse = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
     return res.status(405).end();
   }
@@ -44,3 +44,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json({ error: error });
   }
 };
+
+export default generateResponse;
