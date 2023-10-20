@@ -14,7 +14,7 @@ const QuestionCard = () => {
   const [askedQuestion, setAskedQuestion] = useState<string | null>(null);
   const [disableSubmit, setDisableSubmit] = useState(false);
 
-  const BASE_URL = 'http://localhost:3000/api';
+  const BASE_URL = 'https://bren-aintroduce.vercel.app/api';
   const formik = useFormik({
     initialValues: {
       question: '',
