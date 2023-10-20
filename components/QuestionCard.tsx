@@ -84,53 +84,51 @@ const QuestionCard = () => {
   
   return (
     <div className="bg-gray-800 p-8 rounded-xl shadow-2xl max-w-md w-full space-y-6">
-          <div className="text-center text-gray-400">
-          <p>Quick Questions:</p>
-          <div className="flex flex-wrap gap-2 justify-center mt-2">
-            {questions.map((question, index) => (
-              <Button key={index} onClick={() => formik.setFieldValue("question",question.text)}>
-                {question.label}
-              </Button>
-            ))}
-          </div>
-
+        <div className="text-center text-gray-400">
+            <p>Quick Questions:</p>
+            <div className="flex flex-wrap gap-2 justify-center mt-2">
+                {questions.map((question, index) => (
+                    <Button key={index} onClick={() => formik.setFieldValue("question",question.text)}>
+                        {question.label}
+                    </Button>
+                ))}
+            </div>
         </div>
 
-
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
             <div className="neu-input">
-              <textarea
-                id="question"
-                name="question"
-                value={formik.values.question}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                placeholder="Ask your question..."
-                className="w-full p-4 bg-gray-800 rounded-xl focus:outline-none text-gray-300 placeholder-gray-500"
-                rows={4}
-              ></textarea>
-              
+                <textarea
+                    id="question"
+                    name="question"
+                    value={formik.values.question}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Ask your question..."
+                    className="w-full p-4 bg-gray-800 rounded-xl focus:outline-none text-gray-300 placeholder-gray-500"
+                    rows={4}
+                    autoFocus={true} // Adding autofocus
+                    style={{ pointerEvents: 'auto', zIndex: 10 }} // Explicitly setting pointer events and zIndex
+                ></textarea>
             </div>
             {formik.touched.question && formik.errors.question ? (
                 <div className="text-red-500 mt-2">Error: {formik.errors.question}</div>
-              ) : null}
-            
+            ) : null}
+
             <div className="flex gap-3">
-              <Button
-                type="button"
-                onClick={() => {
-                  formik.resetForm();
-                  setAnswer('');
-                }}
-              >
-                Clear
-              </Button>
-              <Button type="submit">Submit</Button>
+                <Button
+                    type="button"
+                    onClick={() => {
+                        formik.resetForm();
+                        setAnswer('');
+                    }}
+                >
+                    Clear
+                </Button>
+                <Button type="submit">Submit</Button>
             </div>
-          </form>
+        </form>
           {showModal && (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-gray-800 rounded-xl p-8 max-w-2xl w-full">
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50" style={{ zIndex: 9 }}>              <div className="bg-gray-800 rounded-xl p-8 max-w-2xl w-full">
               <h2 className="text-xl mb-4 text-gray-400">Your Question:</h2>
               <p className="mb-6 text-gray-300">{askedQuestion}</p>
 
