@@ -61,7 +61,7 @@ const PastQuestions: React.FC = () => {
         </>
       ) : (
         <div className="bg-gray-800 p-6 rounded-xl shadow-2xl text-center text-gray-400">
-          <p>You haven't asked any questions yet!</p>
+          <p>You haven&apos;t asked any questions yet!</p>
           <p className="mt-2">Start a conversation by submitting a question above.</p>
         </div>
       )}
