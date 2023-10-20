@@ -71,7 +71,7 @@ const QuestionCard = () => {
 
 
   const questions = [
-    { label: "Passion?", text: "Tell me about your passion" },
+    { label: "Who are you?", text: "Who are you?" },
     { label: "Major", text: "What is your major?" },
     { label: "Time at NUS?", text: "Tell me about your time at NUS."},
     { label: "Influence of Badminton?", text: "How has badminton influenced your professional life?" },
