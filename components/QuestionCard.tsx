@@ -110,7 +110,7 @@ const QuestionCard = () => {
                 style={{ pointerEvents: 'auto', zIndex: 10 }}
             />
 
-            {/* </div> */}
+      
             {formik.touched.question && formik.errors.question ? (
                 <div className="text-red-500 mt-2">Error: {formik.errors.question}</div>
             ) : null}
