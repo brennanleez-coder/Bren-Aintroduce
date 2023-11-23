@@ -2,37 +2,82 @@ import PyPDF2
 from transformers import BertTokenizer, BertModel
 import torch
 
+text_from_resume = """
+Lee Chak Fai Brennan
+Singapore
+brennan.lee@u.nus.edu
+linkedin.com/in/lee-chak-fai-brennan
+
+ 
+Hackathons: Carro AWS Hackathon | Morgan Stanley Tech X Challenge
+Programming Languages & Tools: Python | Java SE & EE | Kotlin| Typescript | Javascript | HTML & CSS| SQL |
+NoSQL
+Frameworks & Tools: React | ReactNative | Angular | Vue | NodeJs
+| Express | FastAPI | PostgreSQL | MongoDB
+Data Engineering: Apache Airflow | Pandas | BigQuery
+Cybersecurity: Metasploit | Caldera | WireShark | Cyberchef
+ 
+Beyond academics, I served as a Teaching Assistant for Computing modules, actively competed locally and
+internationally (ASEAN University Games) for Badminton and captained the Varsity Badminton Team.
+ 
+My dedication has been recognized through the prestigious NUS Sports Scholarship, NUS Student Life Award,
+being appointed as School of Computing Student Ambassador, and participating in the NUS Overseas Colleges
+SEA Programme
+
+Extra-Curricular Activities
+	•	Teaching Assistant for Computing modules at NUS.
+	•	Competed in Badminton locally and internationally (ASEAN University Games), captained Varsity Badminton Team.
+	•	Awards: NUS Sports Scholarship, NUS Student Life Award.
+	•	Roles: School of Computing Student Ambassador, participant in NUS Overseas Colleges SEA Programme.
+Professional Experience
+		Cyber Security Engineer, DSTA
+	•	Duration: Jun 2023 - Dec 2023 (7 months).
+	•	Focus: Red Teaming (MITRE ATT&CK framework, Caldera, Metasploit for Android Payloads) and Blue Teaming (Android Threat Detection).
+		Full Stack Engineer, Invigilo Safety AI
+	•	Duration: Aug 2022 - Jan 2023 (6 months).
+	•	Contributions: Development of SafeKey Mobile App, Web App Development of SafeKey, Product Management, and represented at The Big 5 Conference in Dubai.
+		Assistant Coach
+	•	Duration: Sep 2022 - Nov 2022 (3 months).
+	•	Role: Focused on SEM, social media, display ad campaigns, resulting in a 25.28% click conversion rate; improved website SEO and engagement.
+		Full Stack Engineer, amalan international
+	•	Duration: May 2022 - Aug 2022 (4 months).
+	•	Projects: Development and internationalisation of amalanProtect, collaborated with Indonesian teams.
+		Teaching Assistant, National University of Singapore
+	•	Duration: Jan 2021 - Present (2 years 10 months).
+	•	Modules: BT2102 Database Management and Visualisation, IS1108 Digital Ethics and Data Privacy.
+Education
+	•	National University of Singapore
+	•	Degree: Bachelor of Computing, Information Systems, Minor in Mathematics (2020 - 2024).
+
+"""
 
 resume_path = "/Users/brennanlee/Desktop/Lee_Chak_Fai_Brennan_Resume.pdf"
-# Function to extract text from a resume PDF
 def get_text_from_resume(resume_path):
     try:
         with open(resume_path, 'rb') as file:
             reader = PyPDF2.PdfReader(file)
             full_text = ''
-            for page_num in range(len(reader.pages)):
-                page = reader.pages[page_num]
+            for page in reader.pages:
                 text = page.extract_text()
-                
-            full_text += text
-            
-        return full_text
+                if text:
+                    full_text += text + "\n"  # Ensure all text is included, separated by page
+            return full_text.strip()
     except Exception as e:
         print(f"An error occurred while extracting text from the resume: {e}")
         return None
 
-# Function to generate embeddings from text using BERT
 def bert_embed(text, tokenizer, model):
+    # Prepare the text for the model
     inputs = tokenizer(text, return_tensors='pt', truncation=True, padding='max_length', max_length=512, add_special_tokens=True)
     with torch.no_grad():
         outputs = model(**inputs)
     return outputs.last_hidden_state.squeeze()
 
-# Function to get the mean vector embedding for a resume
 def get_resume_vector():
-    resume_path = "/Users/brennanlee/Desktop/Lee_Chak_Fai_Brennan_Resume.pdf"
-    # Load the resume text
-    resume_text = get_text_from_resume(resume_path)
+    # resume_path = "/Users/brennanlee/Desktop/Lee_Chak_Fai_Brennan_Resume.pdf"
+    # resume_text = get_text_from_resume(resume_path)
+    resume_text = text_from_resume
+    
     if resume_text is None:
         return None
 
@@ -40,40 +85,33 @@ def get_resume_vector():
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     model = BertModel.from_pretrained('bert-base-uncased')
 
-    # Define the size of the chunks and the overlap
-    chunk_size = 512 - 2 * tokenizer.num_special_tokens_to_add(pair=False)  # for [CLS] and [SEP]
+    # Define chunking parameters
+    chunk_size = 512 - 2  # Account for [CLS] and [SEP] tokens
     overlap = 50
 
-    # Split the text into chunks with a sliding window
+    # Tokenize and chunk text
+    tokenized_text = tokenizer.tokenize(resume_text)
     chunks = []
     start = 0
-    tokenized_text = tokenizer.tokenize(resume_text)
-    while start + chunk_size < len(tokenized_text):
+    while start < len(tokenized_text):
         end = start + chunk_size
         chunk = tokenizer.convert_tokens_to_string(tokenized_text[start:end])
         chunks.append(chunk)
         start += (chunk_size - overlap)
-    chunks.append(tokenizer.convert_tokens_to_string(tokenized_text[start:]))
 
-    # Initialize an empty list to hold all embeddings
-    all_embeddings = []
+    # Generate embeddings for each chunk
+    all_embeddings = [bert_embed(chunk, tokenizer, model) for chunk in chunks]
 
-    # Process each chunk with the model
-    for chunk in chunks:
-        embedding = bert_embed(chunk, tokenizer, model)
-        all_embeddings.append(embedding)
-
-    # Convert the list of embeddings into a tensor
+    # Calculate the mean of the embeddings
     embeddings_tensor = torch.stack(all_embeddings)
-
-    # Take the mean of the embeddings along the 0th dimension
     mean_embedding = torch.mean(embeddings_tensor, 0)
 
-    # Convert to numpy array
-    vector = mean_embedding.numpy()
+    return mean_embedding.numpy()
 
-    return vector
 
+vector = get_resume_vector()
+print(vector.shape)
+# print(get_text_from_resume(resume_path))
 # Example usage
 
 

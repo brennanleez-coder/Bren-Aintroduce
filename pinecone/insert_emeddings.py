@@ -21,30 +21,33 @@ index = pinecone.Index(pinecone_index)
 vector_embedding = get_resume_vector()
 
 # Convert the vector embedding to a list of floats
-if isinstance(vector_embedding, np.ndarray):
-    vector_embedding_list = vector_embedding.tolist()
-elif isinstance(vector_embedding, list):
-    vector_embedding_list = vector_embedding
-else:
-    raise TypeError("The vector embedding should be a numpy array or a list.")
+vector_embedding_list = vector_embedding.tolist() if isinstance(vector_embedding, np.ndarray) else vector_embedding
 
 # Generate a unique ID for the resume's embedding
 candidate_name = "Brennan"
 unique_id = uuid.uuid4()
 vector_id = f"resume_{candidate_name}_{unique_id}"
 
+# ===============================================================
+
 # Check and adjust the vector's dimensionality to match your Pinecone index
 desired_dimension = 1536  # Replace with your index's dimension
 if len(vector_embedding_list) > desired_dimension:
+    # Truncate the vector if it's longer than the desired dimension
     vector_embedding_list = vector_embedding_list[:desired_dimension]
 elif len(vector_embedding_list) < desired_dimension:
+    # Pad the vector with zeros if it's shorter than the desired dimension
     vector_embedding_list = np.pad(vector_embedding_list, (0, desired_dimension - len(vector_embedding_list)), 'constant').tolist()
 
 # Ensure vector size is within Pinecone's limit (4 MB)
 vector_byte_size = len(vector_embedding_list) * 4  # Assuming float32, 4 bytes per element
 if vector_byte_size > 4194304:
-    raise ValueError("Vector size exceeds Pinecone's limit of 4 MB")
+    # Scale down the vector if it exceeds the size limit
+    scale_factor = 4194304 / vector_byte_size
+    vector_embedding_list = np.array(vector_embedding_list) * scale_factor
+    vector_embedding_list = vector_embedding_list.tolist()
 
+# print(len(vector_embedding_list))
 # Upsert the vector into the Pinecone index
 index.upsert(vectors=[(vector_id, vector_embedding_list)])
 
